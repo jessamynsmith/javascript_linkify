@@ -16,6 +16,8 @@
     <div class="message">This is a message with a domain url: google.com nice right?</div>
     <div class="message">This is a message with a full url: http://bing.com cool</div>
     <div class="message">This is a message with two urls: microsoft.com and http://apple.com double the fun</div>
+    <div class="message">This is a message with an a href: <a href="http://ibm.com">ibm.com</a> is this ok?
+        and a link url oracle.com</div>
 </div>
 <br>
 
@@ -43,10 +45,15 @@
         }
 
         const extractLinks = function(text) {
-            let pattern = new RegExp('([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?', "g");
+            let pattern = new RegExp('(<a[^>]*>)?([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(</a>)?', "g");
 
             const result = text.replace(pattern, function(originalUrl) {
-                let href = createLinkDiv(originalUrl);
+                let href = '';
+                if (originalUrl.startsWith('<a')) {
+                    href = originalUrl;
+                } else {
+                    href = createLinkDiv(originalUrl);
+                }
                 linksDiv.append($(`<div>${href}</div>`));
                 return href;
             });
