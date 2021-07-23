@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .messages {
+            padding: 10px;
+            border: 2px black solid;
+        }
+    </style>
+</head>
+<body>
+<h5>Original</h5>
+<div id="original" class="messages">
+    <div class="message">This is a message without a url.</div>
+    <div class="message">This is a message with a domain url: google.com nice right?</div>
+    <div class="message">This is a message with a full url: http://bing.com cool</div>
+    <div class="message">This is a message with two urls: microsoft.com and http://apple.com double the fun</div>
+</div>
+<br>
+<h5>Linkified</h5>
+<div id="linkified" class="messages">
+</div>
+<br>
+<h5>Links</h5>
+<div id="links" class="messages">
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        let linksDiv = $('#links');
+
+        const createLinkDiv = function(originalUrl) {
+            let urlWithProtocol = originalUrl;
+            if (!originalUrl.startsWith('http')) {
+                urlWithProtocol = 'https://' + urlWithProtocol;
+            }
+            let tag = `<a href="${urlWithProtocol}">${originalUrl}</a>`;
+            return tag;
+        }
+
+        const extractLinks = function(text) {
+            let pattern = new RegExp('([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?', "g");
+
+            const result = text.replace(pattern, function(originalUrl) {
+                let href = createLinkDiv(originalUrl);
+                linksDiv.append($(`<div>${href}</div>`));
+                return href;
+            });
+
+            return result;
+        }
+
+        let linkifiedDiv = $('#linkified');
+        var msgDivs = $('.message');
+        msgDivs.each(function(index, item) {
+            var result = extractLinks(item.innerHTML);
+            linkifiedDiv.append($(`<div>${result}</div>`));
+        })
+    })
+</script>
+
+</body>
+</html>
